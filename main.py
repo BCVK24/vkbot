@@ -1,17 +1,25 @@
+import re
 import vk_api
-import requests
+import requests 
 from vk_api import VkUpload
 from vk_api.utils import get_random_id
 from vk_api.longpoll import VkLongPoll, VkEventType
 
-def save_audio_message(url, file_name):
+
+def is_valid_youtube_url(url):
+    regex = (
+        r'^(https?://)?(www\.)?'
+        '(youtube|youtu|youtube-nocookie)\.(com|be)/'
+        '(watch\?v=|embed/|v/|.+\?v=)?([^&=%\?]{11})')
+    match = bool(re.match(regex, url))
+
+
+def send_audio_message(url):
     response = requests.get(url)
     if response.status_code == 200:
-        # Вот сюдашки в апишку суешь вместо строчки выше
         response.content
+        # Вот сюдашки в апишку суешь вместо строчки выше
         
-        
-
 
 def write_message(sender, message, attachments=None):
     if attachments is not None:
@@ -30,11 +38,16 @@ for event in longpoll.listen():
         received_message = event.text
         sender = event.user_id
         attachments = []
-        image = "images/Persik.png"
-        upload_image = upload.photo_messages(photos=image)[0]
-        attachments.append('photo{}_{}'.format(upload_image["owner_id"], upload_image["id"]))
+        
         if received_message == "Начать":
+            image = "images/Persik.png"
+            upload_image = upload.photo_messages(photos=image)[0]
+            attachments.append('photo{}_{}'.format(upload_image["owner_id"], upload_image["id"]))
             write_message(sender=sender, message='Привет. Я бот VK Audio Clean. С моей помощью ты сможешь улучшить запись своего голоса, удалив слова-паразиты, паузы и внешние шумы. Let\'s try!', attachments=attachments)
+        
+        if is_valid_youtube_url(received_message) is True:
+            write_message(sender=sender, message="Прости, я пока не умею работать с видео из Youtube, но скоро обязательно научусь!!!")
+
 
     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
         message = vk.messages.getById(message_ids=event.message_id)['items'][0]
@@ -44,4 +57,4 @@ for event in longpoll.listen():
                 if attachment['type'] == 'audio_message':
                     audio_message = attachment['audio_message']
                     audio_url = audio_message['link_mp3']
-                    save_audio_message(audio_url)
+                    send_audio_message(audio_url)
