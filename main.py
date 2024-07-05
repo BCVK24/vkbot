@@ -43,7 +43,7 @@ for event in longpoll.listen():
             image = "images/Persik.png"
             upload_image = upload.photo_messages(photos=image)[0]
             attachments.append('photo{}_{}'.format(upload_image["owner_id"], upload_image["id"]))
-            write_message(sender=sender, message='Привет. Я бот VK Audio Clean. С моей помощью ты сможешь улучшить запись своего голоса, удалив слова-паразиты, паузы и внешние шумы. Let\'s try!', attachments=attachments)
+            write_message(sender=sender, message='Привет. Я бот VK CleanCast. С моей помощью ты сможешь улучшить запись своего голоса, удалив слова-паразиты, паузы и внешние шумы. Let\'s try!', attachments=attachments)
         
         if is_valid_youtube_url(received_message) is True:
             write_message(sender=sender, message="Прости, я пока не умею работать с видео из Youtube, но скоро обязательно научусь!!!")
