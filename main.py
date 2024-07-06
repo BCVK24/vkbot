@@ -25,7 +25,7 @@ def send_audio_message(url):
     response = requests.get(url)
     if response.status_code == 200:
         resp = request.post(f'{api_source_url}recording', files={
-            'recording_file': response
+            'recording_file': response.content
         }, json={
         'recording': "chat_bot_recording"
         }, headers={
