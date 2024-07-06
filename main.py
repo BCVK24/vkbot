@@ -6,6 +6,13 @@ from vk_api.utils import get_random_id
 from vk_api.longpoll import VkLongPoll, VkEventType
 
 
+api_source_url = 'http://127.0.0.1:8080/'
+
+
+def get_auth_token(vk_id):
+    return requests.post(f'{api_source_url}user/auth/token').json()['access_token']
+
+
 def is_valid_youtube_url(url):
     regex = (
         r'^(https?://)?(www\.)?'
@@ -17,8 +24,19 @@ def is_valid_youtube_url(url):
 def send_audio_message(url):
     response = requests.get(url)
     if response.status_code == 200:
-        response.content
-        # Вот сюдашки в апишку суешь вместо строчки выше
+        resp = request.post(f'{api_source_url}recording', files={
+            'recording_file': response
+        }, json={
+        'recording': "chat_bot_recording"
+        }, headers={
+        'Authorization': 'Bearer 123'
+        })
+
+
+def get_recordnig_info(recording_id):
+    requests.get(f'{api_source_url}recording/{recording_id}', headers={
+        'Authorization': 'Bearer 123'
+        })
         
 
 def write_message(sender, message, attachments=None):
@@ -28,7 +46,7 @@ def write_message(sender, message, attachments=None):
         auth.method("messages.send", {"user_id": sender, "message": message, 'random_id': get_random_id()})
 
 
-TOKEN = "vk1.a.1OgMrmJ94L0cyLEOfzqz75193hU4Z6Dyg_14N6fnYxh5LahZma9KGjPnrwRsN0DuVgA9QwZ_sTMJJh02DX8SyivY6sE1CbWfg7WSZ5X05hJMWIZGerBi-IiJsWmjkxkKuy68Rb9BzohJcRT0j4D8sqg-PDmsmX-6iPdAui4zohZKOJiudDzzEYVgIUlbAmuQgJZ2pY97QqMceik75ynkEA"
+TOKEN = "ZVVFROvWHfT915K6LeJo1tG4ZycjvqSa3OhVrGpG2v7xry3JuEsbrZslYQm2oihIe4XxcWy3NDX4kjjjBbydBJNEVwxwtaIIxMd1qMlF68ikB1oPAczdoEDZS1ZssiQ2wfliin0V_0XCS_NeoHOHAma6YmTFIY_LGX6C3qGvgU_Qr-CMji11dc6XrKrUPZ7xpspHXA"
 auth = vk_api.VkApi(token=TOKEN)
 vk = auth.get_api()
 longpoll = VkLongPoll(auth)
