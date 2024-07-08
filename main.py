@@ -30,14 +30,26 @@ def send_audio_message(url):
         'recording': "chat_bot_recording"
         }, headers={
         'Authorization': 'Bearer 123'
-        })
+        })  # RETURN STRUCTURE FILE
+
+        if resp.status_code == 200:
+            return resp.content == 200
 
 
 def get_recordnig_info(recording_id):
-    requests.get(f'{api_source_url}recording/{recording_id}', headers={
+    resp = requests.get(f'{api_source_url}recording/{recording_id}', headers={
         'Authorization': 'Bearer 123'
-        })
-        
+        }) # RETURN FILE INFO
+    if resp.status_code == 200:
+        return resp.content
+
+
+def get_recording_bytes(recording_id):
+    resp = requests.get(f'{api_source_url}recording/download/{recording_id}', headers={
+        'Authorization': 'Bearer 123'
+        }) # RETURN FILE BYTES
+    if resp.status_code == 200:
+        return resp.content
 
 def write_message(sender, message, attachments=None):
     if attachments is not None:
